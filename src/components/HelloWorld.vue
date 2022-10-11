@@ -6,10 +6,10 @@
         compIndex.includes('1') ? 'select-item' : 'not-select-item',
       ]"
       :style="{
-        top: 345 + 'px',
-        left: 345 + 'px'
+        top: 100 + 'px',
+        left: 100 + 'px',
       }"
-      @click="handleClick({ id: '1', left: 345, top: 345, rotate: 0 },$event)"
+      @click="handleClick({ id: '1', left: 100, top: 100, rotate: 0 }, $event)"
     >
       1
     </div>
@@ -20,9 +20,9 @@
       ]"
       :style="{
         top: 100 + 'px',
-        left: 1200 + 'px'
+        left: 500 + 'px',
       }"
-      @click="handleClick({ id: '2', left: 1200, top: 100, rotate: 0 },$event)"
+      @click="handleClick({ id: '2', left: 500, top: 100, rotate: 0 }, $event)"
     >
       2
     </div>
@@ -32,10 +32,10 @@
         compIndex.includes('3') ? 'select-item' : 'not-select-item',
       ]"
       :style="{
-        top: 345 + 'px',
-        left: 800 + 'px'
+        top: 500 + 'px',
+        left: 600 + 'px',
       }"
-      @click="handleClick({ id: '3', left: 800, top: 345, rotate: 0 }, $event)"
+      @click="handleClick({ id: '3', left: 600, top: 500, rotate: 0 }, $event)"
     >
       3
     </div>
@@ -43,22 +43,19 @@
 </template>
 
 <script setup>
-import Moveable  from 'moveable';
-import { ref, nextTick, onMounted, watch } from 'vue';
-
+import Moveable from "moveable";
+import { ref, nextTick, onMounted, watch } from "vue";
 
 defineProps({
-  msg: String
-})
+  msg: String,
+});
 let moveable;
 function init() {
   moveable = new Moveable(document.body, {
-    target: '.select-item',
+    target: ".select-item",
     // If the container is null, the position is fixed. (default: parentElement(document.body))
     // container: document.body,
-    elementGuidelines: [].slice.call(
-      document.querySelectorAll('.comp-item'),
-    ),
+    elementGuidelines: [].slice.call(document.querySelectorAll(".comp-item")),
     // individualGroupable: true,
     draggable: true,
     resizable: true,
@@ -82,26 +79,25 @@ function init() {
     // verticalGuidelines: [0, 200, 400],
     // horizontalGuidelines: [0, 200, 400],
     snapThreshold: 5,
-    renderDirections: ['nw', 'n', 'ne', 'w', 'e', 'sw', 's', 'se'],
+    renderDirections: ["nw", "n", "ne", "w", "e", "sw", "s", "se"],
   });
   moveable
-    .on('drag', (e) => {
+    .on("drag", (e) => {
       console.log(e);
       e.target.style.transform = e.transform;
     })
-    .on('dragEnd', ({ target, isDrag, clientX, clientY }) => {
-      console.log('onDragEnd', target, isDrag);
-    })
+    .on("dragEnd", ({ target, isDrag, clientX, clientY }) => {
+      console.log("onDragEnd", target, isDrag);
+    });
 }
 
 onMounted(() => {
-  init()
+  init();
 });
 
 const compIndex = ref([]);
 const handleClick = (comp, e) => {
   const isMultiple = e.ctrlKey;
-  console.log(isMultiple, moveable);
   if (isMultiple) {
     moveable.rotatable = false;
     const p = compIndex.value.indexOf(comp.id);
@@ -114,24 +110,27 @@ const handleClick = (comp, e) => {
     moveable.rotatable = true;
     compIndex.value = [comp.id];
   }
-}
+};
 
 function clearAll() {
   compIndex.value = [];
 }
 
-watch(() => compIndex, (n) => {
-  // moveable.renderDirections = false;
-  nextTick(() => {
-    moveable.updateSelectors();
-    debugger
-    moveable.elementGuidelines = [].slice.call(
-        document.querySelectorAll('.not-select-item'),
+watch(
+  () => compIndex,
+  (n) => {
+    nextTick(() => {
+      moveable.updateSelectors();
+      debugger;
+      moveable.elementGuidelines = [].slice.call(
+        document.querySelectorAll(".not-select-item")
       );
-  });
-}, {
-  deep: true
-})
+    });
+  },
+  {
+    deep: true,
+  }
+);
 </script>
 
 <style scoped>
